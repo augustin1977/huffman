@@ -52,28 +52,43 @@ void organiza_lista(alfa lista[], int n){ // bubble sort para organizar a lista 
 		}
 	}
 }
-int recebe_texto(char frase[],alfa lista[]){
-	int i=0;
-	int n=0;
-	while(frase[i]!='\0'){
-		n=cria_lista(lista,frase[i],n);	
-		i++;
+int recebe_texto(char frase[],alfa lista[]){ // recebe o texto em forma de string e copia ele para a lista
+	int i=0; // inicializa contador
+	int n=0; // inicializa variavel de contagem de itens da lista
+	while(frase[i]!='\0'){ // enquanto a frase não chega no fim...
+		n=cria_lista(lista,frase[i],n);	// envia cada caracter para a funçao cria lista e recebe de volta o numero de itens na lista
+		i++; // icrementa contador
 	}
-	return n;
+	return n; // retorna o numero de itens da lista
+}
+
+void cria_arvore(arvore a[], alfa lista[], int n){ // em contrução - ha duvidas de como fazere isso ainda
+	int i; // inicializa contador
+	for (i=0;i<n;i++){ // copia cada parte da lista para o folhas da arvore
+		a[i].letra=lista[i].letra; //  copia a letra
+		a[i].freq=lista[i].freq; // copia a frequencia
+		a[i].direita=NULL; // define o endereço da proxima a direita como NULL por ser folha
+		a[i].esquerda=NULL; // define o endereço da proxima a esquerda como NULL por ser folha
+	}
 }
 
 
 int main(){
 	setlocale(LC_ALL, "Portuguese");
-	int i=0;
+	int i=0,j;
 	alfa lista[TAM]; // cria lista
-	arvore *a[TAM];
+	arvore a[TAM]; // cria arvore - duvida se cria como vetor estatico ou dinamico...
 	char frase[TAM]="frase para testar a funçao de copiar os caracteres para o lista\ntexto na outra linha pra verificar se o programa é capaz de lidar com essa questão\nfuncionando perfeitamente";
-	printf("%s\n",frase);
+	printf("%s\n",frase);// imprime a frase de teste
 	i=recebe_texto(frase,lista);// transforma a string numa lista de letras e retorna o numero de letras
 //	imprime_lista(lista,i);// imprime a lista para conferir o funcionamento
 	organiza_lista(lista,i);// organiza a lista para testar
 	printf("\n");// da um espaço
 	imprime_lista(lista,i);// imprime novamente para ver se organizou
+	printf("Primeira versão da arvore\n");// separação para verificar se está funcionando
+	cria_arvore(a,lista,i);// envia a lista para criação das folhas da arvore
+	for (j=0;j<i;j++){
+		printf("%c %d\n",a[j].letra,a[j].freq); // imprime as folhas da arvore
+	}
 	return 0;// retorna 0 para informar que não houve erro
 }
