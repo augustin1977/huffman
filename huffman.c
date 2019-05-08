@@ -3,11 +3,11 @@
 #include <locale.h>
 #define TAM 500
 
-typedef struct arvore{ // definição da struct
+typedef struct arvore{ // defini��o da struct
 	char letra; // char
 	int freq;
-	struct arvore *direita; // endereço irmãos
-	struct arvore *esquerda; // endereço filhos
+	struct arvore *direita; // endere�o irm�os
+	struct arvore *esquerda; // endere�o filhos
 } arvore;
 typedef struct alfa{ // cria estrutura da lista de indice
 	char letra;// cria a letra
@@ -17,14 +17,14 @@ typedef struct alfa{ // cria estrutura da lista de indice
 int cria_lista(alfa lista[],char letra, int n){ // insere letra na lista e acumula frequencia
 	int i,status=0;
 	for (i=0;i<n;i++){ // corre toda a lista
-		if (letra==lista[i].letra){ // verifica se o caracter é igual a algum da lista
+		if (letra==lista[i].letra){ // verifica se o caracter � igual a algum da lista
 			status=1;// se for muda o status para 1
 			lista[i].freq++; // acumula frequencia
 		}
 	}
-	if (status==0){ // se status =0 então letra não está na lista
+	if (status==0){ // se status =0 ent�o letra n�o est� na lista
 		lista[n].letra=letra;// inclui letra na lista
-		lista[n].freq=1; // coloca frequencia =1 pois é primeira ocorrencoa
+		lista[n].freq=1; // coloca frequencia =1 pois � primeira ocorrencoa
 		n++;// incrementa tamanho da lista
 	}
 	return n; // retorna novo tamanho da lista
@@ -36,15 +36,15 @@ void imprime_lista(alfa lista[], int n){ // simplesmente imprime a lista
 	}
 }
 
-void troca(alfa *a, alfa *b){ // função de troca para facilitar codigo do bubble sort
+void troca(alfa *a, alfa *b){ // fun��o de troca para facilitar codigo do bubble sort
 	alfa aux; // cria variavel auxiliar
 	aux=*a;// copia o conteudo de a em aux
-	*a=*b; // copia o conteudo de b no endereço de a
-	*b=aux;// copia aux no endereço de b
+	*a=*b; // copia o conteudo de b no endere�o de a
+	*b=aux;// copia aux no endere�o de b
 }
 void organiza_lista(alfa lista[], int n){ // bubble sort para organizar a lista por frequencia
 	int i,j;
-	for (i=0;i<n-1;i++){// percorre a lista até n-1
+	for (i=0;i<n-1;i++){// percorre a lista at� n-1
 		for (j=i;j<n;j++){// percorre a lista a partir de i
 			if (lista[i].freq<lista[j].freq){ // compara e se for maior troca
 				troca(&lista[i],&lista[j]); // troca
@@ -55,6 +55,7 @@ void organiza_lista(alfa lista[], int n){ // bubble sort para organizar a lista 
 void organiza_arvore(arvore a[],alfa lista[], int n){ // bubble sort para organizar a lista por frequencia
 	int  i,j;
 	for (i=0;i<n-1;i++){// percorre a lista até n-1
+
 		for (j=i;j<n;j++){// percorre a lista a partir de i
 			if (lista[i].freq<lista[j].freq){ // compara e se for maior troca
 				troca(&lista[i],&lista[j]); // troca
@@ -67,11 +68,13 @@ int recebe_texto(char frase[],alfa lista[]){ // recebe o texto em forma de strin
 	int n=0; // inicializa variavel de contagem de itens da lista
 	while(frase[i]!='\0'){ // enquanto a frase não chega no fim...
 		n=cria_lista(lista,frase[i],n);	// envia cada caracter para a funçao cria lista e recebe de volta o numero de itens na lista
+
 		i++; // icrementa contador
 	}
 	return n; // retorna o numero de itens da lista
 }
 void percorre_arvore(arvore *a, alfa lista[], int max ){ // função para trasnferir todos os caracteres da lista para a arvore
+
 	int i;
 	for (i=0;i<max;i++){
 		cria_arvore(a,lista,i);
@@ -114,10 +117,11 @@ int main(){
 	i=recebe_texto(frase,lista);// transforma a string numa lista de letras e retorna o numero de letras
 //	imprime_lista(lista,i);// imprime a lista para conferir o funcionamento
 	organiza_lista(lista,i);// organiza a lista para testar
-	printf("\n");// da um espaço
+	printf("\n");// da um espa�o
 	imprime_lista(lista,i);// imprime novamente para ver se organizou
 	printf("Primeira versão da arvore\n");// separação para verificar se está funcionando
 	percorre_arvore(&a,lista,i);// envia a lista para criação das folhas da arvore
 	imprime(&(a[0]),i);
 	return 0;// retorna 0 para informar que não houve erro
+
 }
