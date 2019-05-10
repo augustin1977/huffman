@@ -2,9 +2,13 @@
 #include <string.h>
 #include <locale.h>
 #define TAM 500
+
+#define typeof(var) _Generic(char: "Char",int: "Integer",float: "Float",char *: "String",void *: "Pointer",default: "Undefined")
+
 typedef struct arvore{ // definição da struct
 	char letra; // char
 	int freq;
+	struct arvore *prox;
 	struct arvore *direita; // endereço irmãos
 	struct arvore *esquerda; // endereço filhos
 } arvore;
@@ -45,22 +49,13 @@ void organiza_lista(alfa lista[], int n){ // bubble sort para organizar a lista 
 	int i,j;
 	for (i=0;i<n-1;i++){// percorre a lista até n-1
 		for (j=i;j<n;j++){// percorre a lista a partir de i
-			if (lista[i].freq<lista[j].freq){ // compara e se for maior troca
+			if (lista[i].freq>lista[j].freq){ // compara e se for maior troca
 				troca(&lista[i],&lista[j]); // troca
 			}
 		}
 	}
 }
-void organiza_arvore(arvore a[],alfa lista[], int n){ // bubble sort para organizar a lista por frequencia
-	int  i,j;
-	for (i=0;i<n-1;i++){// percorre a lista até n-1
-		for (j=i;j<n;j++){// percorre a lista a partir de i
-			if (lista[i].freq<lista[j].freq){ // compara e se for maior troca
-				troca(&lista[i],&lista[j]); // troca
-			}
-		}
-	}
-}
+
 int recebe_texto(char frase[],alfa lista[]){ // recebe o texto em forma de string e copia ele para a lista
 	int i=0; // inicializa contador
 	int n=0; // inicializa variavel de contagem de itens da lista
@@ -70,36 +65,58 @@ int recebe_texto(char frase[],alfa lista[]){ // recebe o texto em forma de strin
 	}
 	return n; // retorna o numero de itens da lista
 }
-void percorre_arvore(arvore *a, alfa lista[], int max ){ // função para trasnferir todos os caracteres da lista para a arvore
-	int i;
-	for (i=0;i<max;i++){
-		cria_arvore(a,lista,i);
-	}
-}
-void cria_arvore(arvore *a[], alfa lista[], int i){ // em contrução - contruido como vetor, parece que funcionou, 
+
+void cria_arvore(arvore **a, alfa lista[], int i){ // em contrução - contruido como vetor, parece que funcionou, 
 	 						  	   					//todos os caracteres estão alinhados a direita falta agora criar uma função que junte 
 	 						  	   					//os pares e altere a arvore
 	if (*a==NULL) {
 		*a = (arvore*)malloc(sizeof(arvore)); // aloca a memoria para a arvore
 		(*(*a)).letra=lista[i].letra; //  copia a letra
 		(*(*a)).freq=lista[i].freq; // copia a frequencia
+		(*(*a)).prox=NULL;
 		(*(*a)).direita=NULL; // define o endereço da proxima a direita como NULL por ser folha
 		(*(*a)).esquerda=NULL;
 	}
 	else {
-		cria_arvore(&(*(*a)).direita, lista,i); // chama a recursividade a direita para formar a lista inicial
+		cria_arvore(&(*(*a)).prox, lista,i); // chama a recursividade a proximo para formar a lista inicial
 		}
+
 }
-void imprime(arvore *a,int n){ // funçao para imprimir a arvore como ela está, recebe a lista e o numero de nós
+
+void dobra_arvore(arvore **a, alfa lista[], int i){
+	 arvore *aux1,*aux2;
+	 
+  	 aux1=*a;
+  	 aux2=((*(*a))).prox;
+  	 //aux2=((*aux2)).prox;
+  	 printf("aux1=%c %d \n",&(*aux2).letra,(*aux2).freq);
+  	 printf("aux2=%c %d \n",&(*aux1).letra,(*aux1).freq);
+	 //aux2=&a->prox;
+	 printf("----------\n");	
+	 //printf("%p",&(*aux2).direita);
+	 //printf("passei\n");
+	 *a = (arvore*)malloc(sizeof(arvore));
+	 (*(*a)).direita=*&(aux1->prox);
+	 (*(*a)).esquerda=*&(aux2->prox);
+	 (*(*a)).freq=*&(*aux1).freq+*&(*aux2).freq;
+	 (*(*a)).prox=aux2;
+	 aux1->prox=NULL;
+	 aux1->prox=NULL;
+	 printf("%c %c %d\n", (*(*(*a)).esquerda).letra,(*(*(*a)).direita).letra,(*(*a)).freq);
+	 //(*(*a)).freq=aux2->freq+aux1->freq;
+}
+
+void imprime(arvore **a,int n){ // funçao para imprimir a arvore como ela está, recebe a lista e o numero de nós
 	int i; // contador para definir o nivel de impressão
-	n++;
-	if (a != NULL) { // verifica se terminou a arvore
-      imprime (a->direita,n);// chama a recursão a direita
-      for (i=0;i<n;i++){
-      	printf(" ");
+	if (*a != NULL) { // verifica se terminou a arvore
+      imprime (&(*(*a)).prox,n);// chama a recursão do proximo
+      if (&(*(*a)).esquerda!=NULL) {
+        imprime (&(*(*a)).esquerda,n);// chama a recursão do esquerda 
 	  }
-      printf("%c %d\n",(*a).letra,(*a).freq);
-      imprime (a->esquerda,n); // chama a recursão a esquerda
+      printf("%c %d\n",(*(*a)).letra,(*(*a)).freq); // imprime a letra e a frequencia
+	  	  if (&(*(*a)).direita!=NULL) {
+		  imprime (&(*(*a)).direita,n); // chama a recursão a esquerda
+		  }
    }	
 }
 
@@ -107,8 +124,9 @@ int main(){
 	setlocale(LC_ALL, "Portuguese");
 	int i=0,j;
 	alfa lista[TAM]; // cria lista
-	arvore *a; // cria arvore - duvida se cria como vetor estatico ou dinamico...
-	char frase[TAM]="frase para testar a funçao de copiar os caracteres para o lista texto na outra linha pra verificar se o programa é capaz de lidar com essa questão funcionando perfeitamente";
+	arvore *a=NULL; // cria arvore - duvida se cria como vetor estatico ou dinamico...
+	//char frase[TAM]="frase para testar a funçao de copiar os caracteres para o lista texto na outra linha pra verificar se o programa é capaz de lidar com essa questão funcionando perfeitamente";
+	char frase[TAM]="aabbcccdedefgagaabb";
 	printf("%s\n",frase);// imprime a frase de teste
 	i=recebe_texto(frase,lista);// transforma a string numa lista de letras e retorna o numero de letras
 //	imprime_lista(lista,i);// imprime a lista para conferir o funcionamento
@@ -116,7 +134,14 @@ int main(){
 	printf("\n");// da um espaço
 	imprime_lista(lista,i);// imprime novamente para ver se organizou
 	printf("Primeira versão da arvore\n");// separação para verificar se está funcionando
-	percorre_arvore(&a,lista,i);// envia a lista para criação das folhas da arvore
-	imprime(&(a[0]),i);
+	
+	for (j=0;j<i;j++){
+		printf("%d\n",j);
+		cria_arvore(&a,lista,j);// envia a lista para criação das folhas da arvore
+	}
+	imprime(&a,i);
+	dobra_arvore(&a,lista,i);
+	printf("Imprimindo arvore\n");
+	imprime(&a,i);
 	return 0;// retorna 0 para informar que não houve erro
 }
