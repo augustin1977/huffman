@@ -1,4 +1,4 @@
-#i#include <stdio.h>
+#include <stdio.h>
 #include <string.h>
 #include <locale.h>
 #define TAM 500
