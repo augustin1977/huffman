@@ -120,7 +120,6 @@ int main(){
 	char frase[TAM]="aabbbccddeefg";
 	printf("%s\n",frase);// imprime a frase de teste
 	i=recebe_texto(frase,a);// transforma a string numa lista de letras e retorna o numero de letras
-//	imprime_lista(lista,i);// im prime a lista para conferir o funcionamento
 	organiza_lista(a,i);// organiza a lista para testar
 	printf("\n");// da um espaço
 	imprime_lista(a,i);// imprime novamente para ver se organizou
