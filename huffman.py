@@ -141,7 +141,7 @@ def text_from_bits(bits, encoding='utf-8', errors='surrogatepass'):
 def main():
     opcao=0
     texto=False
-    caminho=r"C:\Users\ericaugustin\Documents\Prototipos\Testes e experiencias\Hoffman\ "
+    caminho=r"\ "
     caminho=caminho[:-1]
 
     while(opcao!=9):
